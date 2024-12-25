@@ -46,6 +46,10 @@ mod Counter {
         counter: u32
     }
 
+    pub mod Error {
+        pub const NEGATIVE_COUNTER: felt252 = 'Counter can\'t be negative';
+    }
+
     #[constructor]
     fn constructor(ref self: ContractState, init_value: u32, owner: ContractAddress) {
         self.counter.write(init_value);
@@ -67,6 +71,7 @@ mod Counter {
 
         fn decrease_counter(ref self: ContractState) {
             let old_counter = self.counter.read();
+            assert(old_counter>0, Error::NEGATIVE_COUNTER);
             let new_counter = old_counter - 1;
             self.counter.write(new_counter);
             self.emit(CounterDecreased { counter: new_counter });
