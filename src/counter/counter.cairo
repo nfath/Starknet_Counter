@@ -9,19 +9,31 @@ trait ICounter<TContractState> {
 #[starknet::contract]
 mod Counter {
     use super::ICounter;
-    //use starknet::ContractAddress;
+    use openzeppelin_access::ownable::OwnableComponent;
+    use starknet::ContractAddress;
     use starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
 
+    component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
+
+    // Ownable Mixin
+    #[abi(embed_v0)]
+    impl OwnableMixinImpl = OwnableComponent::OwnableMixinImpl<ContractState>;
+    impl InternalImpl = OwnableComponent::InternalImpl<ContractState>;
+    
     #[storage]
     struct Storage {
         counter: u32,
+        #[substorage(v0)]
+        ownable: OwnableComponent::Storage
     }
 
     #[event]
     #[derive(Drop, starknet::Event)]
     pub enum Event {
         CounterIncreased: CounterIncreased,
-        CounterDecreased: CounterDecreased
+        CounterDecreased: CounterDecreased,
+        #[flat]
+        OwnableEvent: OwnableComponent::Event
     }
 
     #[derive(Drop, starknet::Event)]
@@ -35,8 +47,9 @@ mod Counter {
     }
 
     #[constructor]
-    fn constructor(ref self: ContractState, init_value: u32) {
+    fn constructor(ref self: ContractState, init_value: u32, owner: ContractAddress) {
         self.counter.write(init_value);
+        self.ownable.initializer(owner);
     }
 
     #[abi(embed_v0)]
@@ -60,6 +73,7 @@ mod Counter {
         }
 
         fn reset_counter(ref self: ContractState) {
+            self.ownable.assert_only_owner();
             self.counter.write(0);
         }
     }
