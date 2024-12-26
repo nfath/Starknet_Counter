@@ -111,3 +111,18 @@ fn test_reset_counter_non_owner() {
     assert!(current_count == initial_count, "Counter should not have reset");
 }
 
+#[test]
+fn test_reset_counter_as_owner() {
+    let initial_count = 5;
+    let (counter, _) = deploy_counter(initial_count);
+
+    counter.increase_counter();
+ 
+    start_cheat_caller_address(counter.contract_address,OWNER());
+    counter.reset_counter();
+    stop_cheat_caller_address(counter.contract_address);
+
+    let current_count = counter.get_counter();
+
+    assert!(current_count == 0, "Counter should be reset to 0");
+}
