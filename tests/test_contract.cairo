@@ -52,3 +52,15 @@ fn test_increase_counter() {
     assert!(current_count == expected_count, "Count should increment by 1");
 }
 
+#[test]
+fn test_decrease_counter() {
+    let initial_count = 1;
+    let (counter, _) = deploy_counter(initial_count);
+
+    counter.decrease_counter();
+
+    let expected_count = initial_count - 1;
+    let current_count = counter.get_counter();
+    assert!(current_count == expected_count, "Count should decrement by 1");
+}
+
