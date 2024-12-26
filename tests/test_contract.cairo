@@ -64,3 +64,20 @@ fn test_decrease_counter() {
     assert!(current_count == expected_count, "Count should decrement by 1");
 }
 
+#[test]
+#[feature("safe_dispatcher")]
+fn test_decrease_counter_negative() {
+    let initial_count = 0;
+    let (_, safe_counter) = deploy_counter(initial_count);
+
+    match safe_counter.decrease_counter() {
+         Result::Ok(_) => panic!("Decrease below 0 did not panic"),
+         Result::Err(panic_data) => { 
+            assert!(
+                *panic_data[0] == 'Counter can\'t be negative',
+                "Should throw NEGATIVE COUNTER error",
+            )
+        },
+    }
+}
+
