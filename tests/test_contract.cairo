@@ -81,3 +81,12 @@ fn test_decrease_counter_negative() {
     }
 }
 
+#[test]
+#[should_panic]
+fn test_increase_counter_overflow() {
+    let initial_count = 0xFFFFFFFF;
+    let (counter, _) = deploy_counter(initial_count);
+
+    counter.increase_counter();
+}
+
