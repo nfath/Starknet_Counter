@@ -45,10 +45,25 @@ fn test_increase_counter() {
     let initial_count = 0;
     let (counter, _) = deploy_counter(initial_count);
 
+    let mut spy = spy_events();
+    
     counter.increase_counter();
 
     let expected_count = initial_count + 1;
     let current_count = counter.get_counter();
+
+    spy
+        .assert_emitted(
+            @array![
+                (
+                    counter.contract_address,
+                    Counter::Event::CounterIncreased (
+                        Counter::CounterIncreased { counter: current_count },
+                    ),
+                ),
+            ],
+        );
+
     assert!(current_count == expected_count, "Count should increment by 1");
 }
 
