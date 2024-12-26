@@ -57,8 +57,9 @@ fn test_increase_counter() {
             @array![
                 (
                     counter.contract_address,
-                    Counter::Event::CounterIncreased (
+                    Counter::Event::CounterIncreased(
                         Counter::CounterIncreased { counter: current_count },
+                        // Counter::CounterIncreased { counter: 0 },  //what happens in this case
                     ),
                 ),
             ],
@@ -72,10 +73,26 @@ fn test_decrease_counter() {
     let initial_count = 1;
     let (counter, _) = deploy_counter(initial_count);
 
+    let mut spy = spy_events();
+
     counter.decrease_counter();
 
     let expected_count = initial_count - 1;
     let current_count = counter.get_counter();
+
+    spy
+        .assert_emitted(
+            @array![
+                (
+                    counter.contract_address,
+                    Counter::Event::CounterDecreased(
+                        Counter::CounterDecreased { counter: current_count },
+                        // Counter::CounterIncreased { counter: 0 },  //what happens in this case
+                    ),
+                ),
+            ],
+        );
+
     assert!(current_count == expected_count, "Count should decrement by 1");
 }
 
