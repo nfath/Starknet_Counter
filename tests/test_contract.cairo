@@ -93,7 +93,8 @@ fn test_increase_counter_overflow() {
 #[test]
 #[feature("safe_dispatcher")]
 fn test_reset_counter_non_owner() {
-    let (_, safe_counter) = deploy_counter(0);
+    let initial_count = 5;
+    let (counter, safe_counter) = deploy_counter(initial_count);
 
     match safe_counter.reset_counter() {
         Result::Ok(_) => panic!("non-owner should not be able to reset counter"),
@@ -105,5 +106,8 @@ fn test_reset_counter_non_owner() {
             )
         }
     }
+
+    let current_count = counter.get_counter();
+    assert!(current_count == initial_count, "Counter should not have reset");
 }
 
