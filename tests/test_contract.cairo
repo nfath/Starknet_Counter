@@ -90,3 +90,20 @@ fn test_increase_counter_overflow() {
     counter.increase_counter();
 }
 
+#[test]
+#[feature("safe_dispatcher")]
+fn test_reset_counter_non_owner() {
+    let (_, safe_counter) = deploy_counter(0);
+
+    match safe_counter.reset_counter() {
+        Result::Ok(_) => panic!("non-owner should not be able to reset counter"),
+        Result::Err(panic_data) => {
+            // assert(*panic_data[0] == '', *panic_data[0]); // FAIL 'Caller is not the owner'
+            assert!(
+                *panic_data[0] == 'Caller is not the owner',
+                "Should error if the caller is not the owner!",
+            )
+        }
+    }
+}
+
