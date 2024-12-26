@@ -39,3 +39,16 @@ fn test_deploy_contract() {
     let current_counter = counter.get_counter();
     assert!(current_counter == initial_count, "count should be initial count");
 }
+
+#[test]
+fn test_increase_counter() {
+    let initial_count = 0;
+    let (counter, _) = deploy_counter(initial_count);
+
+    counter.increase_counter();
+
+    let expected_count = initial_count + 1;
+    let current_count = counter.get_counter();
+    assert!(current_count == expected_count, "Count should increment by 1");
+}
+
