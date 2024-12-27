@@ -2,3 +2,7 @@ target
 .snfoundry_cache/
 account.json
 keystore.json
+.env
+node_modules
+.next
+.DS_Store
