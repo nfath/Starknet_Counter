@@ -9,6 +9,7 @@ import {
   useInjectedConnectors,
   jsonRpcProvider,
   voyager,
+  starkscan,
 } from "@starknet-react/core";
 
 export function Providers({ children }: { children: ReactNode }) {
