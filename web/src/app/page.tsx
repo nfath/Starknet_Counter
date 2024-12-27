@@ -26,7 +26,8 @@ const Page: FC = () => {
   // Step 2 --> Read your balance -- End
 
   // Step 3 --> Read counter from contract -- Start
-  const contractAddress = "0x03c317b62e7bbabc31c097f534bb989194efabcd6a53ce2080b98c4a9c08675a";
+  //const contractAddress = "0x03c317b62e7bbabc31c097f534bb989194efabcd6a53ce2080b98c4a9c08675a";
+  const contractAddress = "0x05820cc69d11264759744d18269992970520d76abc39c48d4e7995bcab74ff88";
   const { data: readData, refetch: dataRefetch, isError: readIsError, isLoading: readIsLoading, error: readError } = useReadContract({
     functionName: "get_counter",
     args: [],
